@@ -132,7 +132,7 @@ export const TodoTable: React.FC<TodoTableProps> = ({
                   className="table-input"
                 />
               ) : (
-                <a href={todo.url} target="_blank" rel="noopener noreferrer" className="table-link">
+                <a href={todo.url ?? undefined} target="_blank" rel="noopener noreferrer" className="table-link">
                   {todo.url}
                 </a>
               )}

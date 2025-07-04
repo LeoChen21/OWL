@@ -30,7 +30,7 @@ interface TodoFormProps {
  * />
  * ```
  */
-export const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, onCancel }) => {
+export const TodoForm: React.FC<TodoFormProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState({ name: '', type: 'Written', url: '', creator: '' });
 
   /**
