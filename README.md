@@ -1,5 +1,7 @@
 # OWL - Online Web Library
 
+## 🌐 **Live Demo: [https://main.d2x1y6x1u800j9.amplifyapp.com/](https://main.d2x1y6x1u800j9.amplifyapp.com/)**
+
 A modern, user-friendly web application for managing and organizing online resources. Built with React, TypeScript, and AWS Amplify Gen2.
 
 ## ✨ Features
@@ -61,6 +63,8 @@ src/
 
 4. **Open your browser**
    Navigate to `http://localhost:5173`
+
+> **Development Environment**: Uses AWS Amplify Gen2 Sandbox for isolated backend resources during development
 
 ### First Time Setup
 
