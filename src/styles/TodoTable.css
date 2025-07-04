@@ -1,0 +1,124 @@
+.todo-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+  background-color: #f8f9fa;
+}
+
+.table-header-cell {
+  border: 1px solid #dee2e6;
+  padding: 12px 8px;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: left;
+  color: #495057;
+}
+
+.table-header-cell:hover {
+  background-color: #e9ecef;
+}
+
+.table-cell {
+  border: 1px solid #dee2e6;
+  padding: 8px;
+  vertical-align: middle;
+}
+
+.table-row:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.table-row:hover {
+  background-color: #e9ecef;
+}
+
+.table-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.table-select {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.table-link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.table-link:hover {
+  text-decoration: underline;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.edit-button {
+  color: #007bff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.edit-button:hover {
+  background-color: #e3f2fd;
+}
+
+.save-button {
+  color: #28a745;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.save-button:hover {
+  background-color: #d4edda;
+}
+
+.cancel-button {
+  color: #6c757d;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.cancel-button:hover {
+  background-color: #f8f9fa;
+}
+
+.delete-button {
+  color: #dc3545;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.delete-button:hover {
+  background-color: #f8d7da;
+}

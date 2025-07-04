@@ -1,47 +1,84 @@
-import { useEffect, useState } from "react";
-import type { Schema } from "../amplify/data/resource";
+import { useState } from "react";
 import { useAuthenticator } from '@aws-amplify/ui-react';
-import { generateClient } from "aws-amplify/data";
+import { useTodos } from "./hooks/useTodos";
+import { TodoForm } from "./components/TodoForm";
+import { TodoTable } from "./components/TodoTable";
+import "./styles/App.css";
 
-const client = generateClient<Schema>();
-
+/**
+ * Main application component for OWL (Online Web Library)
+ * 
+ * Features:
+ * - User authentication with AWS Cognito
+ * - Todo management (create, read, update, delete)
+ * - Real-time data synchronization
+ * - Responsive design
+ * - Sortable table interface
+ * - Inline editing capabilities
+ * 
+ * @returns {JSX.Element} Main application interface
+ */
 function App() {
   const { user, signOut } = useAuthenticator();
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const { todos, handleSort, getSortIcon, createTodo, updateTodo, deleteTodo } = useTodos();
+  const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-  }, []);
+  /**
+   * Handles creating a new todo and hiding the form
+   * @param {Object} todoData - New todo data
+   */
+  const handleCreateTodo = async (todoData: { name: string; type: string; url: string; creator: string }) => {
+    await createTodo(todoData);
+    setShowForm(false);
+  };
 
-  function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
-  }
+  /**
+   * Handles updating an existing todo
+   * @param {string} id - Todo ID to update
+   * @param {Object} todoData - Updated todo data
+   */
+  const handleUpdateTodo = async (id: string, todoData: { name: string; type: string; url: string; creator: string }) => {
+    await updateTodo(id, todoData);
+  };
 
-  function deleteTodo(id: string) {
-    client.models.Todo.delete({ id })
-  }
+  /**
+   * Handles deleting a todo
+   * @param {string} id - Todo ID to delete
+   */
+  const handleDeleteTodo = async (id: string) => {
+    await deleteTodo(id);
+  };
 
   return (
-    <main>
-      <h1>{user?.signInDetails?.loginId}'s todos</h1>
-      <button onClick={createTodo}>+ new</button>
-      <ul>
-        {todos.map(todo => <li
-          onClick={() => deleteTodo(todo.id)}
-          key={todo.id}>
-          {todo.content}
-        </li>)}
-      </ul>
-      <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
-          Review next step of this tutorial.
-        </a>
+    <main className="app-container">
+      <div className="app-header">
+        <h1 className="app-title">{user?.signInDetails?.loginId}'s entries</h1>
+        <button 
+          onClick={() => setShowForm(!showForm)}
+          className="add-entry-button"
+        >
+          {showForm ? 'Cancel' : '+ Add New Entry'}
+        </button>
       </div>
-      <button onClick={signOut}>Sign out</button>
+      
+      {showForm && (
+        <TodoForm 
+          onSubmit={handleCreateTodo}
+          onCancel={() => setShowForm(false)}
+        />
+      )}
+
+      <TodoTable 
+        todos={todos}
+        onSort={handleSort}
+        getSortIcon={getSortIcon}
+        onUpdate={handleUpdateTodo}
+        onDelete={handleDeleteTodo}
+      />
+      
+      <button onClick={signOut} className="sign-out-button">
+        Sign out
+      </button>
     </main>
   );
 }
