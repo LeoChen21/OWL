@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useTodos } from "./hooks/useTodos";
+import { useGuestTodos } from "./hooks/useGuestTodos";
+import { useGuestAuth } from "./contexts/GuestAuthContext";
 import { TodoForm } from "./components/TodoForm";
 import { TodoTable } from "./components/TodoTable";
 import "./styles/App.css";
@@ -9,18 +10,31 @@ import "./styles/App.css";
  * Main application component for OWL (Online Web Library)
  * 
  * Features:
- * - User authentication with AWS Cognito
+ * - User authentication with AWS Cognito and Guest mode
  * - Todo management (create, read, update, delete)
- * - Real-time data synchronization
+ * - Real-time data synchronization for authenticated users
+ * - Local storage for guest users
  * - Responsive design
  * - Sortable table interface
  * - Inline editing capabilities
  * 
  * @returns {JSX.Element} Main application interface
  */
-function App() {
-  const { user, signOut } = useAuthenticator();
-  const { todos, handleSort, getSortIcon, createTodo, updateTodo, deleteTodo } = useTodos();
+interface AppProps {
+  authUser?: any;
+  signOut?: () => void;
+}
+
+function App({ authUser, signOut }: AppProps = {}) {
+  const { isGuest, logout: guestLogout } = useGuestAuth();
+  
+  // Always call hooks - React requirement
+  const authenticatedTodos = useTodos();
+  const guestTodos = useGuestTodos();
+  
+  // Use appropriate hook data based on authentication state
+  const { todos, handleSort, getSortIcon, createTodo, updateTodo, deleteTodo } = 
+    isGuest ? guestTodos : authenticatedTodos;
   const [showForm, setShowForm] = useState(false);
 
   /**
@@ -49,10 +63,32 @@ function App() {
     await deleteTodo(id);
   };
 
+  // Get display name based on authentication state
+  const displayName = isGuest 
+    ? "Guest User" 
+    : (authUser?.signInDetails?.loginId || "User");
+
+  // Handle logout for both guest and authenticated users
+  const handleLogout = () => {
+    if (isGuest) {
+      guestLogout();
+    } else if (signOut) {
+      signOut();
+    }
+  };
+
   return (
     <main className="app-container">
       <div className="app-header">
-        <h1 className="app-title">{user?.signInDetails?.loginId}'s entries</h1>
+        <div className="header-left">
+          <h1 className="app-title">{displayName}'s entries</h1>
+          {isGuest && (
+            <div className="guest-badge">
+              <span>Guest Mode</span>
+              <span className="guest-info">Data stored temporarily</span>
+            </div>
+          )}
+        </div>
         <button 
           onClick={() => setShowForm(!showForm)}
           className="add-entry-button"
@@ -76,8 +112,8 @@ function App() {
         onDelete={handleDeleteTodo}
       />
       
-      <button onClick={signOut} className="sign-out-button">
-        Sign out
+      <button onClick={handleLogout} className="sign-out-button">
+        {isGuest ? 'Exit Guest Mode' : 'Sign out'}
       </button>
     </main>
   );

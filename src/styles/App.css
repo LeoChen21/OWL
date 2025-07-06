@@ -6,13 +6,55 @@
 }
 
 .app-header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 30px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .app-title {
   color: #333;
-  margin-bottom: 20px;
+  margin: 0;
+}
+
+.guest-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.guest-badge span:first-child {
+  font-weight: bold;
+  color: #856404;
+}
+
+.guest-info {
+  color: #856404;
+  font-size: 10px;
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .header-left {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 .add-entry-button {
