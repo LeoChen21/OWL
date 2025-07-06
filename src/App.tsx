@@ -36,6 +36,7 @@ function App({ authUser, signOut }: AppProps = {}) {
   const { todos, handleSort, getSortIcon, createTodo, updateTodo, deleteTodo } = 
     isGuest ? guestTodos : authenticatedTodos;
   const [showForm, setShowForm] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<string>('all');
 
   /**
    * Handles creating a new todo and hiding the form
@@ -62,6 +63,12 @@ function App({ authUser, signOut }: AppProps = {}) {
   const handleDeleteTodo = async (id: string) => {
     await deleteTodo(id);
   };
+
+  // Filter todos based on active filter
+  const filteredTodos = todos.filter(todo => {
+    if (activeFilter === 'all') return true;
+    return todo.type.toLowerCase() === activeFilter;
+  });
 
   // Get display name based on authentication state
   const displayName = isGuest 
@@ -97,6 +104,35 @@ function App({ authUser, signOut }: AppProps = {}) {
         </button>
       </div>
       
+      <div className="filter-controls">
+        <div className="filter-buttons">
+          <button 
+            className={`filter-button ${activeFilter === 'all' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('all')}
+          >
+            All ({todos.length})
+          </button>
+          <button 
+            className={`filter-button ${activeFilter === 'written' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('written')}
+          >
+            Written ({todos.filter(t => t.type.toLowerCase() === 'written').length})
+          </button>
+          <button 
+            className={`filter-button ${activeFilter === 'illustrated' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('illustrated')}
+          >
+            Illustrated ({todos.filter(t => t.type.toLowerCase() === 'illustrated').length})
+          </button>
+          <button 
+            className={`filter-button ${activeFilter === 'video' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('video')}
+          >
+            Video ({todos.filter(t => t.type.toLowerCase() === 'video').length})
+          </button>
+        </div>
+      </div>
+      
       {showForm && (
         <TodoForm 
           onSubmit={handleCreateTodo}
@@ -105,7 +141,7 @@ function App({ authUser, signOut }: AppProps = {}) {
       )}
 
       <TodoTable 
-        todos={todos}
+        todos={filteredTodos}
         onSort={handleSort}
         getSortIcon={getSortIcon}
         onUpdate={handleUpdateTodo}
