@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import '../styles/TodoForm.css';
+import '../styles/EntryForm.css';
 
-/** Props for TodoForm component */
-interface TodoFormProps {
+/** Props for EntryForm component */
+interface EntryFormProps {
   /** Callback function called when form is submitted with valid data */
   onSubmit: (data: { name: string; type: string; url: string; creator: string }) => void;
   /** Callback function called when form is cancelled */
@@ -10,7 +10,7 @@ interface TodoFormProps {
 }
 
 /**
- * Form component for creating new todo entries
+ * Form component for creating new entries
  * 
  * Features:
  * - Input validation for all fields
@@ -30,7 +30,7 @@ interface TodoFormProps {
  * />
  * ```
  */
-export const TodoForm: React.FC<TodoFormProps> = ({ onSubmit }) => {
+export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState({ name: '', type: 'Written', url: '', creator: '' });
 
   /**
@@ -46,7 +46,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="todo-form">
+    <form onSubmit={handleSubmit} className="entry-form">
       <div className="form-group">
         <label className="form-label">Name: </label>
         <input 

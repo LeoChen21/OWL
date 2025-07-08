@@ -1,10 +1,11 @@
 import type { Schema } from "../../amplify/data/resource";
 import { useEditTodo } from "../hooks/useEditTodo";
 import type { SortField } from "../hooks/useTodos";
-import '../styles/TodoTable.css';
+import { useState, useEffect } from "react";
+import '../styles/Table.css';
 
-/** Props for TodoTable component */
-interface TodoTableProps {
+/** Props for Table component */
+interface TableProps {
   /** Array of todo items to display */
   todos: Array<Schema["Todo"]["type"]>;
   /** Callback function for sorting by field */
@@ -18,7 +19,7 @@ interface TodoTableProps {
 }
 
 /**
- * Table component for displaying and managing todo items
+ * Table component for displaying and managing entries
  * 
  * Features:
  * - Sortable columns with visual indicators
@@ -42,7 +43,7 @@ interface TodoTableProps {
  * />
  * ```
  */
-export const TodoTable: React.FC<TodoTableProps> = ({ 
+export const Table: React.FC<TableProps> = ({ 
   todos, 
   onSort, 
   getSortIcon, 
@@ -50,6 +51,19 @@ export const TodoTable: React.FC<TodoTableProps> = ({
   onDelete 
 }) => {
   const { editingId, editData, startEditing, cancelEditing, updateEditData } = useEditTodo();
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (openMenuId && !(event.target as Element).closest('.menu-container')) {
+        setOpenMenuId(null);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [openMenuId]);
 
   /**
    * Handles updating a todo item after inline editing
@@ -63,7 +77,8 @@ export const TodoTable: React.FC<TodoTableProps> = ({
   };
 
   return (
-    <table className="todo-table">
+    <div className="table-wrapper">
+      <table className="todo-table">
       <thead className="table-header">
         <tr>
           <th 
@@ -90,7 +105,7 @@ export const TodoTable: React.FC<TodoTableProps> = ({
           >
             Creator{getSortIcon('creator')}
           </th>
-          <th className="table-header-cell">Actions</th>
+          <th className="table-header-cell menu-column"></th>
         </tr>
       </thead>
       <tbody>
@@ -149,16 +164,43 @@ export const TodoTable: React.FC<TodoTableProps> = ({
                 todo.creator
               )}
             </td>
-            <td className="table-cell">
+            <td className="table-cell menu-cell">
               {editingId === todo.id ? (
                 <div className="action-buttons">
                   <button onClick={handleUpdate} className="save-button">Save</button>
                   <button onClick={cancelEditing} className="cancel-button">Cancel</button>
                 </div>
               ) : (
-                <div className="action-buttons">
-                  <button onClick={() => startEditing(todo)} className="edit-button">Edit</button>
-                  <button onClick={() => onDelete(todo.id)} className="delete-button">Delete</button>
+                <div className="menu-container">
+                  <button 
+                    className="menu-trigger"
+                    onClick={() => setOpenMenuId(openMenuId === todo.id ? null : todo.id)}
+                    aria-label="Menu"
+                  >
+                    <span className="menu-dots">⋮</span>
+                  </button>
+                  {openMenuId === todo.id && (
+                    <div className="menu-dropdown">
+                      <button 
+                        className="menu-item"
+                        onClick={() => {
+                          startEditing(todo);
+                          setOpenMenuId(null);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        className="menu-item delete-item"
+                        onClick={() => {
+                          onDelete(todo.id);
+                          setOpenMenuId(null);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </td>
@@ -166,5 +208,6 @@ export const TodoTable: React.FC<TodoTableProps> = ({
         ))}
       </tbody>
     </table>
+    </div>
   );
 };

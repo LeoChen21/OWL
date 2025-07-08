@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useTodos } from "./hooks/useTodos";
 import { useGuestTodos } from "./hooks/useGuestTodos";
 import { useGuestAuth } from "./contexts/GuestAuthContext";
-import { TodoForm } from "./components/TodoForm";
-import { TodoTable } from "./components/TodoTable";
+import { EntryForm } from "./components/EntryForm";
+import { Table } from "./components/Table";
 import "./styles/App.css";
 
 /**
@@ -134,13 +134,13 @@ function App({ authUser, signOut }: AppProps = {}) {
       </div>
       
       {showForm && (
-        <TodoForm 
+        <EntryForm 
           onSubmit={handleCreateTodo}
           onCancel={() => setShowForm(false)}
         />
       )}
 
-      <TodoTable 
+      <Table 
         todos={filteredTodos}
         onSort={handleSort}
         getSortIcon={getSortIcon}
